@@ -1,0 +1,28 @@
+L2 acede a L3 e á Internet em WWW 
+
+acess-list 100 permit ip 12.0.0.0 0.0.255.255 12.1.0.0 0.0.255.255
+acess-list 100 permit tcp 12.0.0.0 0.0.255.255 host 1.1.1.1 eq www
+int fa6/0
+ip access-group 100 in
+
+/***********************************************************************\
+
+L3 acede a L2 e a Internet em FTP
+
+acess-list 110 permit ip 12.1.0.0 0.0.255.255 12.0.0.0 0.0.255.255
+acess-list 110 permit tcp 12.1.0.0 0.0.255.255 host 1.1.1.1 eq ftp
+int fa0/0
+ip access-group 110 in
+
+/***********************************************************************\
+
+L1 acede á Internet
+
+access-list 120 permit ip 1.1.0.0 0.0.255.255 host 1.1.1.1
+int fa1/0
+ip access-group 120 in
+
+
+/***********************************************************************\
+
+access-list 100 permit ip 12.0.0.0 0.0.255.255 host 12.0.0.1

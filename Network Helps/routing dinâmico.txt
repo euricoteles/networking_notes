@@ -1,0 +1,78 @@
+ENCAMINHAMENTO ESTÁTICO (redes distantes)
+
+route [endereço de rede distante] [mascara de rede da rede distante] [next hop]
+
+next hop - serial 0/0 ou IP saída do router
+
+rede destino | mascara de rede | next hop
+0.0.0.0      | 0.0.0.0         | 10.0.1.2
+
+Router#ip route 192.168.10.0 255.255.255.0 10.0.1.1
+
+ENCAMINHAMENTO DINÂMICO (redes que estão ligadas ao router)
+
+Routing é feito no Router
+
+RIP - version 1 (omissão - é sempre) não suporta subnetting 10.0.0.0/30
+RIP - version 2 - suporta subnetting 10.0.0.0/8
+OSPF - subnetting + LSA (estado das portas) + usa regra dos saltos (caminho + curto)
+EIGRP - subnetting + hibrido + usa regra dos saltos (caminho + curto)
+
+router RIP
+version 2
+network 10.0.1.0
+no auto-summary
+
+router OSPF 1(process ID)
+network 10.0.1.0 0.0.0.3 area 0
+
+router EIGRP 200
+network 10.0.1.0 0.0.0.3
+no auto-summary
+
+
+
+
+EIGRP
+router 1
+router EIGRP 200
+network 192.168.0.0 0.0.0.63
+no auto-summary
+
+router 2
+router EIGRP 200
+network 192.168.0.0 0.0.0.63
+network 192.168.0.64 0.0.0.63
+no auto-summary
+
+router 3
+router EIGRP 200
+network 192.168.0.64 0.0.0.63
+no auto-summary
+
+OSPF
+router 5
+router OSPF 1
+network 192.168.20.128 0.0.0.31 area 0
+
+router 6
+router OSPF 1
+network 192.168.20.128 0.0.0.31 area 0
+network 192.168.20.32 0.0.0.31 area 0
+
+router 7
+router OSPF 1
+network 192.168.20.32 0.0.0.31 area 0
+
+REDISTRIBUTE
+
+router 4
+router OSPF 1
+network 192.168.20.128 0.0.0.31 area 0
+redistribute eigrp 200 subnets
+
+router EIGRP 200
+network 192.168.0.64 0.0.0.63
+redistribute ospf 1 metric 100 000 100 255 1 1500
+no auto-summary
+

@@ -1,0 +1,44 @@
+ACCESS CONTROL LIST
+
+-> Standred 
+»access-list 10 permit 192.168.0.0 0.0.0.255
+(1-99)		deny
+
+
+
+->Extended
+»access-list 100 permit ip 192.168.0.0 0.0.0.255 10.10.0.0 0.0.255.255 eq 80
+(100-199)	 deny
+
+(eq , neq, gt)
+
+int fa0/0
+ip access-group 10 in
+		   out
+
+-----------------------------------------------------------------------------------------
+
+Exercicio 1
+
+R1
+
+»access-list 100 permit ip 173.20.10.0 0.0.0.255 173.64.0.0 0.0.3.255
+»access-list 100 permit ip 173.20.10.0 0.0.0.255 173.68.0.0 0.0.3.255
+»int g0/1
+»ip access-group 100 in
+
+»access-list 120 permit ip 173.20.8.192 0.0.0.16 172.20.10.0 0.0.0.255
+»access-list 120 permit ip 173.64.0.0 0.0.3.255 any
+»access-list 120 permit ip 173.68.0.0 0.0.3.255 any
+»int g0/2
+»ip access-group 120 in
+
+R2
+
+»access-list 100 permit ip 173.20.8.192 0.0.0.16 173.64.0.0 0.0.3.255
+»access-list 100 permit ip 173.20.8.0 0.0.0.255 173.68.0.0 0.0.3.255
+»access-list 100 permit ip 173.20.10.0 0.0.0.255 any
+»int g0/1
+»ip access-group 100 in
+
+

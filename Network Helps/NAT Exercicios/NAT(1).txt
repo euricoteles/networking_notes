@@ -1,0 +1,74 @@
+Configuração de NAT estático
+
+O NAT estático é o menos usado e é o que tem a configuração mais simples.
+
+
+R1(config)# ip nat inside source static 10.10.10.10 63.10.22.99
+
+R1(config)# interface fa 0/0
+
+R1(config-if)# ip nat inside
+
+R1(config-if)# exit
+
+R1(config)# interface fa 0/1
+
+R1(config-if)# ip nat outside
+
+R1(config-if)# exit
+
+-----------------------------------------------------------------------------------------
+*****************************************************************************************
+-----------------------------------------------------------------------------------------
+
+Configuração de NAT dinâmico
+
+O NAT dinâmico usa uma gama de endereços públicos no NAT, algo que nem sempre é possível para muitas instituições e empresas.
+
+
+R1(config)# ip nat pool PUBLICO 63.10.22.10 63.10.22.100 netmask 255.255.255.0
+
+R1(config)# access-list 10 permit 10.0.0.0 0.0.0.255
+
+R1(config)# ip nat inside source list 10 pool PUBLICO
+
+R1(config)# interface fa 0/0
+
+R1(config-if)# ip nat inside
+
+R1(config-if)# exit
+
+R1(config)# interface fa 0/1
+
+R1(config-if)# ip nat outside
+
+R1(config-if)# exit
+
+-----------------------------------------------------------------------------------------
+*****************************************************************************************
+-----------------------------------------------------------------------------------------
+
+Configuração de PAT ou NAT overload
+
+O NAT dinâmico usa uma gama de endereços públicos no NAT, algo que nem sempre é possível para muitas instituições e empresas.
+
+
+R1(config)# access-list 10 permit 10.0.0.0 0.0.0.255
+
+R1(config)# ip nat inside source list 10 interface fa 0/1 overload
+
+R1(config)# interface fa 0/0
+
+R1(config-if)# ip nat inside
+
+R1(config-if)# exit
+
+R1(config)# interface fa 0/1
+
+R1(config-if)# ip nat outside
+
+R1(config-if)# exit
+
+-----------------------------------------------------------------------------------------
+*****************************************************************************************
+-----------------------------------------------------------------------------------------

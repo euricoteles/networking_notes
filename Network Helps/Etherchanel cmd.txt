@@ -1,0 +1,7 @@
+sh etherchannel port-channel
+
+sh etherchannel summary
+
+sh interfaces etherchannel
+
+

@@ -1,0 +1,24 @@
+R0
+
+»access-list 100 permit ip 130.20.52.0 0.0.1.255 130.20.51.0 0.0.1.255
+»int g0/0
+»ip access-group 100 out
+
+»access-list 110 permit ip 130.20.49.10 0.0.1.255 130.20.51.0 0.0.1.255 
+»access-list 110 permit ip 130.20.49.14 0.0.1.255 130.20.51.0 0.0.1.255
+»access-list 110 permit ip 130.20.49.18 0.0.1.255 130.20.51.0 0.0.1.255
+»int g0/0
+»ip access-group 110 out
+
+»access-list 120 permit ip 130.20.48.0 0.0.0.255 130.20.52.0 0.0.1.255
+»int g0/1
+»ip access-group 120 out 
+
+
+Proteger de IP Spoofing 
+
+»access-list 130 deny ip 130.20.48.0 0.0.1.255 130.20.51.0 0.0.1.255
+»access-list 130 deny ip 130.20.52.0 0.0.1.255 130.20.51.0 0.0.1.255
+»int g0/0
+»ip access-group 130 in
+

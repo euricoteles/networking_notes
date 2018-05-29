@@ -1,0 +1,27 @@
+48 bits(isp)   16 bits(sub redes) 64 bits (hosts)
+______________ __________________ _______________
+2001:DB8:ACAD: 
+	
+		0000
+		0001
+		...
+		0009
+		000A
+		...
+		FFFF
+
+						2001:DB8:ACAD:BBBB::1/64
+
+
+					2001:DB8:ACAD:BBBB::2/64
+					
+
+		2001:DB8:ACAD:DDDD::1/64	2001:DB8:ACAD:CCCC::/64
+				
+
+
+	2001:DB8:ACAD:AAAA::2/64			2001:DB8:ACAD:FFFF::2/64
+
+
+
+2001:DB8:ACAD:AAAA::1/64					2001:DB8:ACAD:FFFF::1/64

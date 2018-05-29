@@ -1,0 +1,57 @@
+Rede VOIP
+
+Voice Vlan
+
+-Gama endereços VOIP
+-Pool DHCP
+ ->Option 150 TFTP
+
+----------------------------------------------------------------------------------------
+****************************************************************************************
+----------------------------------------------------------------------------------------
+
+Comandos:
+
+RouterA>enable
+
+RouterA#configure terminal
+
+RouterA(config)#interface FastEthernet0/0
+
+RouterA(config-if)#ip address 192.168.10.1 255.255.255.0
+
+RouterA(config-if)#no shutdown
+
+RouterA(config)#ip dhcp pool VOZ
+
+RouterA(dhcp-config)#network 192.168.10.0 255.255.255.
+
+RouterA(dhcp-config)#default-router 192.168.10.1
+
+RouterA(dhcp-config)#option 150 ip 192.168.10.1 #Opção obrigatória para a red VoIP.
+
+RouterA(config)#telephony-service
+
+RouterA(config-telephony)#max-dn 5 #Define o número máximo de números de telef
+
+RouterA(config-telephony)#max-ephones 5 #Define o número max de telefones
+
+RouterA(config-telephony)#ip source-address 192.168.10.1 port 2000
+
+RouterA(config-telephony)#auto assign 1 to 5 #Automatically assigning ext numbers to buttons, Este passo pode ser substituído por uma configuração manual
+
+SwitchA(config)#interface range fa0/1 – 3
+
+SwitchA(config-if-range)#switchport mode access
+
+SwitchA(config-if-range)#switchport voice vlan 1
+
+RouterA(config)#ephone-dn 1
+
+RouterA(config-ephone-dn)#number 54001
+
+RouterA(config)#ephone-dn 2
+
+RouterA(config-ephone-dn)#number 54002
+
+O exemplo acima apenas permite usar o VoIP, através da vlan administrativa, não existe qualquer vlan para dados. Para permitir ter uma rede de dados em simultâneo as portas em modo access devem ter definida a vlan de voz.

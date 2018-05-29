@@ -1,0 +1,444 @@
+************************************
+* CONFIGURAÇÃO BÁSICA DE UM SWITCH *
+************************************
+
+
+Switch# copy running-config startup-config                      (copia as configurações da ram para a nvram)
+Switch# show running-config                                     (mostra as configurações)
+Switch# erase startup-config                                    (apaga as configurações de arranque)
+
+
+Switch> enable                                                	(entrar no modo privilegiado exec)
+Switch# config t                                              	(entrar no modo global de configuração)  
+Switch(config)# hostname SW1                                  	(define o nome do router)
+SW1(config)# enable password atec                       	(define password de segurança modo inicial)
+SW1(config)# enable secret atec                         	(define password de segurança modo priv exec)
+SW1(config)# username admin privilege 15 secret atec    	(define uma conta de utilizador e password para autenticação)
+SW1(config)# service password-encryption                      	(ativa encriptação das passwords)
+SW1(config)# no ip domain-lookup                              	(desativa pesquisa de nomes (DNS Lookup)
+SW1(config)# banner motd # SW1... #                           	(mensagem de entrada do router)
+
+
+(Configuração das Portas de Acesso Remoto)
+SW1(config)# line con 0                                  	(Porta Consola (Console)
+SW1(config-line)# password atec                         	(define password)
+SW1(config-line)# login local                                	(ativa login)
+SW1(config-line)# logging synchronous                        	(ativa o log sincronizado)
+SW1(config-line)# exec-timeout 15 0                          	(configura o timeout da ligação)
+SW1(config-line)# line vty 0 4                               	(ligação TELNET)
+SW1(config-line)# password atec                        	(define password)
+SW1(config-line)# login local                                	(ativa login)
+SW1(config-line)# logging synchronous                        	(ativa log sincronizado)
+SW1(config-line)# exec-timeout 15 0                          	(configura o timeout da ligação)
+
+-
+
+(Configuração de Velocidade das Portas/Interfaces)
+SW1(config)# int fa0/1
+SW1(config-if)# speed 10
+SW1(config-if)# speed 100
+SW1(config-if)# speed 1000
+SW1(config-if)# speed auto
+
+(Configuração de Modos de Transmisão das Portas/Interfaces)
+SW1(config)# int fa0/1
+SW1(config-if)# duplex full
+SW1(config-if)# duplex auto
+SW1(config-if)# duplex half
+
+-
+
+(Configuração das Portas de Rede em Segurança)
+SW1(config)# int range fa0/6-24                              	(seleciona o conjunto de portas 6 até 24)
+SW1(config-if)# shutdown                                     	(desliga as portas selecionadas)
+SW1(config-if)# end
+SW1# wr
+
+-
+
+(Configuração de Mac Address Estática numa Porta/Interface)
+SW1(config)# mac-address-table static aaaa.aaaa.aaaa fa0/1 vlan 1
+SW1(config)# no mac-address-table static aaaa.aaaa.aaaa fa0/1 vlan 1
+
+-
+
+(Configuração de Segurança nas Portas/Interfaces com base no MAC/Layer 2)
+SW1(config)# int fa0/1                            	
+SW1(config-if)# switchport port-security                        (ativa a segurança na interface/porta fa0/1)
+SW1(config-if)# switchport port-security mac-address sticky     (converte todos os endereços mac em endereços seguros)
+SW1(config-if)# switchport port-security maximum 1              (apenas um mac address será permitido, o primeiro a ligar-se)
+SW1(config-if)# switchport port-security violation shutdown     (em caso de ligação com outra mac address, a porta será desligada)
+
+-
+
+(Criação de VLANS)
+SW1(config)# vlan 10
+SW1(config-vlan)# name formacao
+SW1(config-vlan)# end
+SW1# wr
+
+(Configuração e Associação de Portas/Interfaces a VLANS)
+SW1(config)# int fa0/1
+SW1(config-if)# switchport mode access
+SW1(config-if)# switchport access vlan 10
+SW1(config-if)# end
+SW1# wr 
+
+(Configuração e Associação de Portas/Interfaces a VLANS)
+SW1(config)# int fa0/1
+SW1(config-if)# switchport mode trunk
+SW1(config-if)# switchport nonegotiate
+SW1(config-if)# switchport trunk native vlan 99
+SW1(config-if)# switchport trunk allowed vlan 10,20,30,99
+SW1(config-if)# end
+SW1# wr 
+
+
+-
+
+(Configuração de Endereço IP e Gateway)
+SW1(config)# ip default-gateway 192.168.1.1
+SW1(config)# int vlan 1
+SW1(config-if)# ip add 192.168.1.2 255.255.255.0
+SW1(config-if)# no shut
+SW1(config-if)# end
+SW1# wr
+
+
+************************************
+* CONFIGURAÇÃO BÁSICA DE UM ROUTER *
+************************************
+
+Router> enable                             						(entrar no modo privilegiado exec)
+Router# config t                           						(entrar no modo global de configuração)  
+Router(config)# hostname R_SF1             						(define o nome do router)
+R_SF1(config)# enable password atec  						(define password de segurança modo inicial)
+R_SF1(config)# enable secret atec    						(define password de segurança modo priv exec)
+R_SF1(config)# username admin privilege 15 secret atec    (define uma conta de utilizador e password para autenticação)
+R_SF1(config)# service password-encryption 						(ativa encriptação das passwords)
+R_SF1(config)# no ip domain-lookup         						(desativa pesquisa de nomes (DNS Lookup)
+R_SF1(config)# banner motd # R_SF1 #       						(mensagem de entrada do router)
+
+(Configuração das Portas de Acesso Remoto)
+R_SF1(config)# line con 0                  						(Porta Consola (Console))
+R_SF1(config-line)# password atec    						(define password)
+R_SF1(config-line)# login local               					(ativa login)
+R_SF1(config-line)# logging synchronous   						(ativa o log sincronizado)
+R_SF1(config-line)# exec-timeout 15 0      						(configura o timeout da ligação)
+
+R_SF1(config-line)# line vty 0 4           						(ligação TELNET)
+R_SF1(config-line)# password atec    						(define password)
+R_SF1(config-line)# login local                					(ativa login)
+R_SF1(config-line)# logging synchronous    						(ativa log sincronizado)
+R_SF1(config-line)# exec-timeout 15 0      						(configura o timeout da ligação)
+
+R_SF1(config)# line aux 0                  						(Porta Auxiliar/Remota (AUX)
+R_SF1(config-line)# password atec    						(define password)
+R_SF1(config-line)# login local               					(ativa login)
+R_SF1(config-line)# logging synchronous   						(ativa o log sincronizado)
+R_SF1(config-line)# exec-timeout 15 0      						(configura o timeout da ligação)
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Configuração de Interfaces - Ethernet/FastEthernet)
+R_SF1(config)# interface fa0/0             						(Porta FastEthernet 0/0)
+R_SF1(config-if)# ip address 192.168.10.6 255.255.255.248  		(configura IP/Subnet Mask)
+R_SF1(config-if)# no shutdown              						(ativa a porta)
+R_SF1(config-if)# end                      						(volta do modo privilegiado(EXEC))
+R_SF1# wr                                  						(equivalente ao comando copy run start - grava o conteúdo da RAm para a NVRAM)
+
+(Configuração de Interfaces Serial)
+R_SF1(config)# interface s0/0/0            						(Porta Serial 0/0/0)
+R_SF1(config-if)# ip address 172.16.1.1 255.255.255.252  		(configura IP/Subnet Mask)
+R_SF1(config-if)# clock rate 64000         						(define a clock rate/sincronização da ligação serial. Apenas aplicado no router/porta DCE)
+R_SF1(config-if)# no shutdown              						(ativa a porta)
+R_SF1(config-if)# end                     						(volta do modo privilegiado(EXEC))
+R_SF1# wr                                  						(equivalente ao comando copy run start - grava o conteúdo da RAm para a NVRAM)
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Configuração de Rotas Estáticas (Static Routes))
+R_SF1(config)# ip route 192.168.1.0 255.255.255.0 172.16.0.2    (ip route <rede_destino> <subnetmask_rede_destino> <next_hop>)
+
+(Configuração de Rotas por Defeito (Default Routes))
+R_SF1(config)# ip route 0.0.0.0 0.0.0.0 172.16.0.2    			(define uma rota por defeito utilizada em stub networks para encaminhamento do tráfego (com acesso à Internet))
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Configuração de Protocolo de Roteamento RIPv1 					(Roteamento Dinâmico))
+R_SF1(config)# router rip                   					(ativa o protocolo de roteamento RIPv1)
+R_SF1(config-router)# network 192.168.1.0   					(adiciona rede diretamente ligada ao router, para ser distribuida pelo RIP na rede (C - Connected na tabela de roteamento do router))
+R_SF1(config-router)# network 172.16.1.0
+R_SF1(config-router)# passive-interface fa0/0
+
+(O comando passive-interface é utilizado em todos os protocolos de roteamento para desativar o envio de atualizações a partir de uma interface específica.
+No entanto, o comportamento do comando varia de um protocolo para o outro.
+
+- No RIP este comando irá desativar o envio de atualizações multicast através de uma interface específica,
+  mas permitirá receber atualizações de entrada de outros routers vizinhos que estejam a utilizar o protocolo RIP.
+  Isto significa que o router irá ainda ser capaz de receber atualizações sobre essa interface passiva e usá-los na tabela de roteamento.
+
+- No EIGRP o comando Passive-interface bloqueia o envio de mensagens hello, portanto, o router não pode formar qualquer relacionamento próximo através da interface passiva.
+
+- No OSPF tem um comportamento semelhante ao EIGRP.)
+
+R_SF1(config-router)# default-information originate   (distribui na rede uma rota por defeito)
+R_SF1(config-router)# auto-summary | no auto-summary  (por defeito o protocolo RIPv1 faz a sumarização das redes. RIPv1 apenas suporta redes sumarizadas.)
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Configuração de Protocolo de Roteamento RIPv2 					(Roteamento Dinâmico))
+R_SF1(config)# router rip                   					(ativa o protocolo de roteamento RIPv2)
+R_SF1(config-router)# version 2
+R_SF1(config-router)# network 192.168.1.0   					(adiciona rede diretamente ligada ao router, para ser distribuida pelo RIP na rede (C - Connected na tabela de roteamento do router))
+R_SF1(config-router)# network 172.16.1.0
+R_SF1(config-router)# passive-interface fa0/0  					(bloqueia o envio de mensagens hello, portanto, o router não pode formar qualquer relacionamento próximo através da interface passiva.)
+R_SF1(config-router)# default-information originate   			(distribui na rede uma rota por defeito)
+R_SF1(config-router)# no auto-summary  							(desactiva a sumarização das redes (por defeito está ativa))
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+(Configuração de Protocolo de Roteamento EIGRP 					(Roteamento Dinâmico/Protocolo Proprietário CISCO)
+
+R_SF1(config)# router eigrp 100                  				(ativa o protocolo de roteamento EIGRP)
+R_SF1(config-router)# network 192.168.1.0 0.0.0.255  			(adiciona rede diretamente ligada ao router, para ser distribuida pelo EIGRP na rede (C - Connected na tabela de roteamento do router))
+R_SF1(config-router)# network 172.16.1.4 0.0.0.3
+R_SF1(config-router)# passive-interface fa0/0  					(bloqueia o envio de mensagens hello, portanto, o router não pode formar qualquer relacionamento próximo através da interface passiva.)
+R_SF1(config-router)# redistribute static   					(distribui na rede uma rota por defeito)
+R_SF1(config-router)# no auto-summary
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Configuração de Protocolo de Roteamento OSPF 					(Roteamento Dinâmico))
+
+R_SF1(config)# router ospf 100                  				(ativa o protocolo de roteamento OSPF)
+R_SF1(config-router)# network 192.168.1.0 0.0.0.255 area 1 		(adiciona rede diretamente ligada ao router, para ser distribuida pelo OSPF na rede (C - Connected na tabela de roteamento do router))
+R_SF1(config-router)# network 172.16.1.4 0.0.0.3 area 1
+R_SF1(config-router)# passive-interface fa0/0  					(bloqueia o envio de mensagens hello, portanto, o router não pode formar qualquer relacionamento próximo através da interface passiva.)
+R_SF1(config-router)# default-information originate   			(distribui na rede uma rota por defeito)
+R_SF1(config-router)# no auto-summary
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Configuração de DHCP 											(Ativa o serviço DHCP no Router)
+
+ip dhcp excluded-address 10.0.0.1								(endereço(s) de ip(s) que não serão distribuídos, neste exemplo, apenas o do router)
+ip dhcp pool EXEMPLO											(nome da pool de endereços de ip)
+network 10.0.0.0 255.255.255.128								(id e máscara de rede dos endereços de ip a serem distribuídos pelo DHCP)
+
+host 10.0.0.10 255.255.255.128									(definir ip fixo de um host em específico)
+client-name PC1													(nome do host a receber o ip fixo)
+hardware-address 00:AB:A6:34:C7:00								(mac-address do host a receber o ip fixo)
+default-router 10.0.0.1											(gateway por defeito a ser atribuído ao host)
+domain-name ccn4.net											(nome de domínio)
+dns-server 8.8.8.8 8.8.4.4									    (servidores de dns)
+end
+wr
+!										
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Configuração de ACLS - Access Lists (Firewall)
+
+R1(config)#access-list ?
+  <1-99>            IP standard access list
+  <100-199>         IP extended access list
+  <1000-1099>       IPX SAP access list
+  <1100-1199>       Extended 48-bit MAC address access list
+  <1200-1299>       IPX summary address access list
+  <1300-1999>       IP standard access list (expanded range)
+  <200-299>         Protocol type-code access list
+  <2000-2699>       IP extended access list (expanded range)
+  <2700-2799>       MPLS access list
+  <300-399>         DECnet access list
+  <600-699>         Appletalk access list
+  <700-799>         48-bit MAC address access list
+  <800-899>         IPX standard access list
+  <900-999>         IPX extended access list
+  
+
+IP Standard Numbered ACLS <1-99>
+
+R1#conf t
+R1(config)#access-list 50 deny host 10.1.1.2
+R1(config)#access-list 50 permit any
+R1(config)#interface fa0/0
+R1(config-if)#ip access-group 50 in
+
+R1(config-if)#end
+R1#show access-list
+Standard IP access list 50
+    10 deny   10.1.1.2 (8 matches)
+    20 permit any
+R1#
+
+----------------------------------------------------------------------------
+
+IP Extended Numbered ACLS <100-199>
+
+R1#conf t
+R1(config)#access-list 150 deny tcp any host 10.1.1.3 eq telnet 
+R1(config)#access-list 150 permit ip any any
+R1(config)#interface fa0/0
+R1(config-if)#ip access-group 150 out
+
+----------------------------------------------------------------------------
+
+IP Standard Named ACLS
+
+R1(config)#ip access-list standard INSIDE_IN
+R1(config-std-nacl)#10 permit 10.1.1.0 0.0.0.255
+R1(config-std-nacl)#500 deny any log
+R1(config-std-nacl)#exit
+R1(config)#int f0/1
+R1(config-if)#ip access-group INSIDE_IN in
+
+R1(config-if)#do show access-list
+Standard IP access list INSIDE_IN
+    10 permit 10.1.1.0, wildcard bits 0.0.0.255
+    500 deny   any log
+R1(config-if)#
+
+----------------------------------------------------------------------------
+
+IP Extended Named ACLS
+
+R1(config)#ip access-list extended OUTSIDE_IN
+R1(config-ext-nacl)#10 deny ip host 71.23.44.50 any
+R1(config-ext-nacl)#20 deny tcp host 204.221.190.5 any eq www
+R1(config-ext-nacl)#500 permit ip any any
+R1(config-ext-nacl)#exit
+R1(config)#int f0/0
+R1(config-if)#ip access-group OUTSIDE_IN in
+R1(config-ext-nacl)#do sh access-list OUTSIDE_IN
+Extended IP access list OUTSIDE_IN
+    10 deny ip host 71.23.44.50 any
+    20 deny tcp host 204.221.190.5 any eq www
+    500 permit ip any any
+R1(config-ext-nacl)#
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Configuração de IPv6 com RIPng)
+
+R1>enable
+R1#conf t
+R1(config)#ipv6 unicast-routing
+R1(config)#interface fa0/0
+R1(config-if)#ipv6 enable
+R1(config-if)#ipv6 address 2001:db8:c18:1::1/64 eui-64
+R1(config-if)#ipv6 rip exemplo enable
+R1(config-if)#no shutdown
+R1(config-if)#interface se0/0/0
+R1(config-if)#ipv6 enable
+R1(config-if)#ipv6 address 2001:db8:c18:2::1/64 eui-64
+R1(config-if)#ipv6 rip exemplo enable
+R1(config-if)#clock rate 64000
+
+R1(config-if)#no shutdown
+R1(config-if)#end
+R1#wr
+
+Configuração Rota Estática em IPv6 (Static Route)
+
+R1>enable
+R1#configure t
+R1(config)#ipv6 route ::/0 se0/0/0
+
+*************************************************
+* Reset de um Router Cisco para Config. Fábrica *
+*************************************************
+
+Método 1
+
+1. Após ligar o router, pressionar em simultâneo as teclas CTRL+Z, até que o router
+   entre em modo de configuração "rommon".
+
+router#configure terminal
+router(config)#config-register 0x2102
+router(config)#end
+router#wr
+router#reload
+
+System configuration has been modified. Save? [yes/no]: n
+Proceed with reload? [confirm]
+Once the router reloads, the System Configuration Dialog appears.
+
+         --- System Configuration Dialog ---
+Would you like to enter the initial configuration dialog? [yes/no]:
+The router is now reset to the original factory defaults.
+
+Método 2
+
+This method uses the config-register 0x2142 command in global configuration mode.
+
+Enter the config-register 0x2142 command in global configuration mode.
+
+router(config)#config-register 0x2142
+This causes the router to ignore the start-up configuration on the next reload. If a show version is issued, the last line in the command output will have '(will be 0x2142 at next reload)' appended to the current configuration register setting.
+
+Reload the router using the reload command in enable mode. It is not necessary to save when prompted to save the system configuration.
+
+router#reload
+System configuration has been modified. Save? [yes/no]: n
+Proceed with reload? [confirm]
+After the router has reloaded, the System Configuration Dialog appears.
+
+Enter no to the question "Would you like to enter initial configuration dialog?"
+
+Change the configuration register setting to 0x2102 by entering the config-register 0x2102 command once in global configuration mode.
+
+Issue the write memory command in enable mode to overwrite the existing start-up configuration with the current running configuration.
+
+Reload the router with the reload command in enable mode.
+
+Once the router reloads, the System configuration Dialog appears.
+
+         --- System Configuration Dialog ---
+Would you like to enter the initial configuration dialog? [yes/no]:
+The router is now reset to the original factory defaults.
+
+Note: The configurations below are stored in ROMMON, and cannot be reset to Factory Default Settings by the write erase or config-register 0x2142 commands.
+
+warm-reboot
+
+memory-size iomem <not default>
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Router-on-a-stick
+
+
+R1(config)# interface g0/0.10
+R1(config)# encapsulation dot19 10
+R1(config-subif)# ip address 172.17.10.1 255.255.255.0
+
+R1(config)# interface g0/0.30
+R1(config)# encalsulation dot19 30
+R1(config-subif)# ip address 172.17.30.1 255.255.255.0
+
+R1(config)# interface g0/0
+R1(config)# no shut
+
+
+Switch>en
+Switch#conf t
+Switch(config)#vlan 10
+Switch(config-vlan)#interface f0/5
+Switch(config-if)#switchport mode trunk
+Switch(config-if)#end
+
+Para ver as interfaces do trunk
+
+Switch# show interface trunk
+
+---------------------------------------------------------------------------
+Switch Multilayer com SVI
+
+Switch>en
+Switch#conf t
+Switch(config)#interface vlan 10
+Switch(config-if)#ip address 192.168.20.1 255.255.255.0
+Switch(config)#vlan 20
+Switch(config-if)#name student
+
+Switch(config)#interface fa0/1
+Switch(config-if)#switchport mode access
+Switch(config-if)# switchport access vlan 20
